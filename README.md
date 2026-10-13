@@ -3,48 +3,102 @@
 > **Prueba técnica · Ficha ADSO 3145556**
 > Entrega: **martes 13 de octubre de 2026, a las 5:00 p. m.** (17:00, hora Colombia).
 
-Este repositorio es el **backend** de *Manager Library*, en **PHP con Laravel**. **Empieza vacío a propósito**: se construye en el fork de cada aprendiz.
+Este repositorio es el **backend** de *Manager Library*, en **PHP con Laravel** con arquitectura hexagonal. Basado en la especificación en `test-manager-library-3145556-docs/spec-php/`.
 
-## Instrucciones
+## 📋 Estado del Proyecto
 
-Cada aprendiz debe **crear el fork** de los seis repositorios del proyecto y **resolver el proyecto
-con el spec planteado**.
+### ✅ Completado
+- **Estructura hexagonal** (Domain, Application, Infrastructure)
+- **Migraciones iniciales** (categories, users, books según spec)
+- **Endpoint `/health`** funcionando (T-01)
+- **Configuración Laravel 11** con JWT authentication
+- **Variables de entorno** seguras (.env.example)
 
-1. Hacer fork, a su cuenta de GitHub, de cada repositorio de la tabla del final.
-2. Leer el spec en [`test-manager-library-3145556-docs`](https://github.com/code-sena/test-manager-library-3145556-docs).
-   Se entrega en dos versiones: `spec-python/` y `spec-.net/`.
-3. Desarrollar en los forks.
+### 🚧 En Progreso
+- Modelo de dominio (aggregates, value objects)
+- Casos de uso (application services)
+- Adaptadores de persistencia
+- Endpoints completos del API contract
 
-## El reto se desarrolla con React y PHP (Laravel)
+## 🏗️ Arquitectura Hexagonal
 
-El spec está escrito para Python y para .NET, pero el reto **no** se hace en esos lenguajes:
+```
+app/
+├── Domain/               # Aggregates, value objects (Article I)
+├── Application/          # Use cases, ports (Article II)
+├── Infrastructure/       # HTTP, persistence, security adapters
+├── Providers/           # Service binding (Article III)
+└── Console/             # Commands
+```
 
-| Capa | Tecnología del reto |
-|---|---|
-| Frontend | React |
-| Backend | PHP con Laravel |
+## 🐳 Desarrollo con Docker
 
-Lo que el spec define sobre el negocio —historias, criterios de aceptación, reglas, contrato de la
-API, modelo de datos— se respeta. Lo que define sobre la tecnología se traduce a React y Laravel.
+```bash
+# 1. Levantar infraestructura (desde test-manager-library-3145556-infra)
+make dev
 
-## La prueba no consiste en escribir el código
+# 2. Instalar dependencias
+composer install
 
-El propósito principal es ver la **capacidad de desempeño con SDD** (*Spec-Driven Development*,
-desarrollo guiado por especificación): cómo se lee, se interpreta y se aplica una especificación
-para llevarla a un stack distinto. El código es el medio, no el fin.
+# 3. Configurar entorno
+cp .env.example .env
+php artisan key:generate
+php artisan jwt:secret
 
-## Entrega
+# 4. Ejecutar migraciones
+php artisan migrate
 
-Cuenta lo que quede **subido a los forks antes de las 5:00 p. m.** (17:00). Lo que llegue después no se revisa.
-No hay prórroga: suban avances parciales con commits pequeños durante la prueba.
+# 5. Iniciar servidor
+php artisan serve
+```
 
-## Los seis repositorios
+## 📚 Especificación Implementada
 
-| Repositorio | Qué va ahí |
-|---|---|
-| [`test-manager-library-3145556-docs`](https://github.com/code-sena/test-manager-library-3145556-docs) | El spec: `spec-python/` y `spec-.net/` |
-| [`test-manager-library-3145556-api`](https://github.com/code-sena/test-manager-library-3145556-api) | Backend en PHP (Laravel) |
-| [`test-manager-library-3145556-app`](https://github.com/code-sena/test-manager-library-3145556-app) | Frontend en React |
-| [`test-manager-library-3145556-page`](https://github.com/code-sena/test-manager-library-3145556-page) | Sitio público estático de presentación |
-| [`test-manager-library-3145556-infra`](https://github.com/code-sena/test-manager-library-3145556-infra) | Contenedores, red, volúmenes y motor de base de datos vacío |
-| [`test-manager-library-3145556-tool`](https://github.com/code-sena/test-manager-library-3145556-tool) | Utilidades: sembrador de datos de demostración |
+Basado en `spec-php/`:
+- **API Contract:** `api-contract.md`
+- **Data Model:** `data-model.md` 
+- **Architecture:** `architecture.md`
+- **ADR:** `adr/` (decisiones arquitectónicas)
+
+## 🔗 Conexión a Base de Datos
+
+Configurar en `.env`:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=postgres      # o 127.0.0.1
+DB_PORT=5432
+DB_DATABASE=manager_library
+DB_USERNAME=manager_library
+DB_PASSWORD=secretpassword
+```
+
+## 🧪 Pruebas
+
+```bash
+# Unit tests
+php artisan test tests/Unit
+
+# Feature tests  
+php artisan test tests/Feature
+
+# Architecture tests (Articles I-III)
+php artisan test tests/Architecture
+```
+
+## 📦 Dependencias Principales
+
+- Laravel 11
+- JWT Auth (tymon/jwt-auth)
+- PostgreSQL (pgsql)
+- Doctrine DBAL
+
+## ⚠️ Entrega
+
+- **Hora límite:** 5:00 p.m. (17:00)
+- **Commits pequeños:** Subir avances frecuentemente
+- **Especificación:** Seguir `spec-php/` exactamente
+- **Arquitectura:** Respetar Articles I-XII de constitution.md
+
+---
+
+**Nota:** Este proyecto sigue **Spec-Driven Development (SDD)**. El código implementa la especificación `spec-php/` traducida de Python/.NET a Laravel.
